@@ -45,7 +45,10 @@
 //! ```
 //!
 
-#![feature(portable_simd)]
+// STABLE FORK (branch stable-scalar): portable_simd replaced by a scalar
+// compat layer (src/simd_compat.rs) so the crate builds on stable Rust.
+// Full upstream feature set retained; archive format compatibility with
+// ozz-animation 0.16.x is unchanged.
 #![allow(unexpected_cfgs)] // TODO: Upgrade rkyv to 0.8
 
 pub mod animation;
@@ -61,6 +64,7 @@ pub mod motion_blending_job;
 #[cfg(all(feature = "wasm", feature = "nodejs"))]
 pub mod nodejs;
 pub mod sampling_job;
+pub(crate) mod simd_compat;
 pub mod skeleton;
 pub mod skinning_job;
 pub mod track;

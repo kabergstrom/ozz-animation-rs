@@ -12,9 +12,8 @@ use static_assertions::const_assert_eq;
 use std::fmt::Debug;
 use std::io::Read;
 use std::mem;
-use std::simd::prelude::*;
-use std::simd::*;
 
+use crate::simd_compat::*;
 use crate::archive::{Archive, ArchiveRead};
 use crate::base::OzzError;
 use crate::math;
@@ -944,7 +943,7 @@ pub(crate) fn simd_f16_to_f32(half4: [u16; 4]) -> f32x4 {
     const WAS_INFNAN: i32x4 = i32x4::from_array([0x7BFF; 4]);
     const EXP_INFNAN: i32x4 = i32x4::from_array([255 << 23; 4]);
 
-    let int4 = i32x4::from([half4[0] as i32, half4[1] as i32, half4[2] as i32, half4[3] as i32]);
+    let int4 = i32x4::from_array([half4[0] as i32, half4[1] as i32, half4[2] as i32, half4[3] as i32]);
     let expmant = MASK_NO_SIGN & int4;
     let shifted = expmant << 13;
     let scaled = fx4(shifted) * MAGIC;
@@ -1057,6 +1056,19 @@ pub(crate) fn ix4_splat_w(v: i32x4) -> i32x4 {
     simd_swizzle!(v, [3, 3, 3, 3])
 }
 
+// STABLE-PORT: portable_simd's `Simd::<f32,4>::trunc()` (round toward zero) has
+// no equivalent in simd_compat (only `floor`/`fract`). Implemented lane-wise via
+// f32::trunc to preserve bit-for-bit semantics.
+#[inline(always)]
+fn fx4_trunc(v: f32x4) -> f32x4 {
+    f32x4::from_array([
+        v[0].trunc(),
+        v[1].trunc(),
+        v[2].trunc(),
+        v[3].trunc(),
+    ])
+}
+
 #[inline(always)]
 pub(crate) fn fx4_sign(v: f32x4) -> i32x4 {
     // In some case, x86_64 and aarch64 may produce different sign NaN (+/-NaN) in same command.
@@ -1126,7 +1138,7 @@ pub(crate) fn fx4_sin_cos(v: f32x4) -> (f32x4, f32x4) {
     let mut x = v.abs();
 
     // x / (PI / 2) rounded to nearest int gives us the quadrant closest to x
-    let quadrant = (FRAC_2_PI * x + FRAC_1_2).trunc();
+    let quadrant = fx4_trunc(FRAC_2_PI * x + FRAC_1_2);
 
     // Make x relative to the closest quadrant.
     // This does x = x - quadrant * PI / 2 using a two step Cody-Waite argument reduction.
@@ -1162,8 +1174,9 @@ pub(crate) fn fx4_sin_cos(v: f32x4) -> (f32x4, f32x4) {
     //
     // So: sin_sign = bit2, cos_sign = bit1 ^ bit2, bit1 determines if we use sin or cos Taylor expansion
     let quadrant_int: i32x4 = unsafe { quadrant.to_int_unchecked() };
-    let bit1 = quadrant_int << 31;
-    let bit2 = (quadrant_int << 30) & SIGN;
+    // STABLE-PORT: literal suffixes — compat i32x4 has Shl<i32> and Shl<u32>.
+    let bit1 = quadrant_int << 31i32;
+    let bit2 = (quadrant_int << 30i32) & SIGN;
 
     // Select which one of the results is sin and which one is cos
     let cond = bit1.simd_eq(SIGN);

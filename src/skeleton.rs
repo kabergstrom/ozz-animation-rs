@@ -456,10 +456,10 @@ const _: () = {
 
 #[cfg(test)]
 mod tests {
-    use std::simd::prelude::*;
     use wasm_bindgen_test::*;
 
     use super::*;
+    use crate::simd_compat::*;
     use crate::math::{SoaQuat, SoaVec3};
 
     #[allow(clippy::excessive_precision)]

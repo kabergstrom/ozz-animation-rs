@@ -465,6 +465,7 @@ where
     ) -> Result<(), D::Error>;
 }
 
+#[cfg(feature = "rkyv")]
 impl<T, D> SliceRkyvExt<T, D> for [T]
 where
     T: rkyv::Archive,

@@ -5,8 +5,9 @@
 use glam::Vec4;
 use std::cell::RefCell;
 use std::rc::Rc;
-use std::simd::prelude::*;
 use std::sync::{Arc, RwLock};
+
+use crate::simd_compat::*;
 
 use crate::base::{OzzBuf, OzzError, OzzMutBuf, OzzObj};
 use crate::math::{fx4_from_vec4, fx4_sign, SoaQuat, SoaTransform, SoaVec3};
@@ -359,7 +360,7 @@ where
                 } else {
                     for idx in 0..num_soa_joints {
                         let weight = layer_weight * layer.joint_weight(idx).simd_max(ZERO);
-                        ctx.accumulated_weights[idx] += weight;
+                        ctx.accumulated_weights[idx] = ctx.accumulated_weights[idx] + weight;
                         Self::blend_n_pass(&transform[idx], weight, &mut output[idx]);
                     }
                 }
@@ -372,7 +373,7 @@ where
                     }
                 } else {
                     for idx in 0..num_soa_joints {
-                        ctx.accumulated_weights[idx] += layer_weight;
+                        ctx.accumulated_weights[idx] = ctx.accumulated_weights[idx] + layer_weight;
                         Self::blend_n_pass(&transform[idx], layer_weight, &mut output[idx]);
                     }
                 }

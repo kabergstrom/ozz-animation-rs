@@ -6,9 +6,10 @@ use std::alloc::{self, Layout};
 use std::cell::RefCell;
 use std::fmt::{Debug, Formatter};
 use std::rc::Rc;
-use std::simd::prelude::*;
 use std::sync::{Arc, RwLock};
 use std::{mem, ptr, slice};
+
+use crate::simd_compat::*;
 
 use crate::animation::{Animation, Float3Key, KeyframesCtrl, QuaternionKey};
 use crate::base::{align_ptr, align_usize, OzzError, OzzMutBuf, OzzObj};
@@ -135,7 +136,8 @@ const _: () = {
 mod serde_interp {
     use serde::ser::SerializeSeq;
     use serde::{Deserialize, Deserializer, Serializer};
-    use std::simd::prelude::*;
+
+    use crate::simd_compat::*;
 
     pub(crate) fn serialize<S: Serializer>(value: &[f32x4; 2], serializer: S) -> Result<S::Ok, S::Error> {
         let mut seq = serializer.serialize_seq(Some(2))?;

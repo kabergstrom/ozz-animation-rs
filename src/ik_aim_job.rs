@@ -3,11 +3,10 @@
 //!
 
 use glam::{Mat4, Quat, Vec3A};
-use std::simd::prelude::*;
-use std::simd::StdFloat;
 
 use crate::base::OzzError;
 use crate::math::*;
+use crate::simd_compat::*;
 
 ///
 /// Rotates a joint so it aims at a target.

@@ -5,9 +5,9 @@
 use glam::{Quat, Vec3, Vec4};
 use std::alloc::{self, Layout};
 use std::io::Read;
-use std::simd::prelude::*;
-use std::simd::*;
 use std::{mem, slice};
+
+use crate::simd_compat::*;
 
 use crate::archive::{Archive, ArchiveRead};
 use crate::base::{align_ptr, align_usize, OzzError};

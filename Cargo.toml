@@ -13,6 +13,9 @@ categories = ["game-development", "rendering::data-formats", "api-bindings", "wa
 exclude = ["/.circleci", "/.github", "/demo", "/expected", "/output", "/resource"]
 resolver = "2"
 
+# STABLE FORK: glam/glam-ext without core-simd (nightly portable_simd) —
+# the crate's own SIMD use goes through the scalar src/simd_compat.rs layer.
+# Feature set otherwise unchanged from upstream.
 [features]
 default = ["rkyv", "serde"]
 serde = ["dep:serde", "glam/serde", "bimap/serde" ]
@@ -23,8 +26,8 @@ nodejs = ["wasm", "dep:js-sys", "dep:wasm-bindgen"]
 [dependencies]
 bimap = { version = "0.6" }
 bytecheck = { version = "0.8", optional = true, default-features = false }
-glam = { version = "0.30", features = [ "core-simd", "libm" ] }
-glam-ext = { version = "0.3.2", features = [ "core-simd", "libm" ] }
+glam = { version = "0.30", features = [ "libm" ] }
+glam-ext = { version = "0.3.2", features = [ "libm" ] }
 js-sys = { version = "0.3", optional = true }
 rkyv = { version = "0.8", optional = true }
 serde = { version= "1", optional = true, features = [ "serde_derive" ] }
