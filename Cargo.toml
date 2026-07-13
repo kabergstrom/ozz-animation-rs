@@ -26,8 +26,13 @@ nodejs = ["wasm", "dep:js-sys", "dep:wasm-bindgen"]
 [dependencies]
 bimap = { version = "0.6" }
 bytecheck = { version = "0.8", optional = true, default-features = false }
-glam = { version = "0.30", features = [ "libm" ] }
-glam-ext = { version = "0.3.2", features = [ "libm" ] }
+# No libm pin (upstream keeps it for cross-platform bit-determinism): the
+# feature is contagious through cargo feature unification, and glam prefers
+# libm over std when both are enabled — which routed every consumer's
+# sqrt/sin_cos through soft-float (~40% of a 50k-instance frame in
+# deferred-ngp). Host std math instead; the golden suites gate tolerance.
+glam = { version = "0.30" }
+glam-ext = { version = "0.3.2" }
 js-sys = { version = "0.3", optional = true }
 rkyv = { version = "0.8", optional = true }
 serde = { version= "1", optional = true, features = [ "serde_derive" ] }
