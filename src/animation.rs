@@ -265,6 +265,7 @@ pub struct AnimationMeta {
     pub s_iframe_desc_count: u32,
 }
 
+#[cfg(any(test, feature = "serde"))]
 #[derive(Debug, Default, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub(crate) struct AnimationRaw {
@@ -426,6 +427,7 @@ impl Animation {
         Animation::from_archive(&mut archive)
     }
 
+    #[cfg(any(test, feature = "serde"))]
     pub(crate) fn from_raw(raw: &AnimationRaw) -> Animation {
         let meta = AnimationMeta {
             version: Animation::version(),
@@ -469,6 +471,7 @@ impl Animation {
         animation
     }
 
+    #[cfg(feature = "serde")]
     pub(crate) fn to_raw(&self) -> AnimationRaw {
         AnimationRaw {
             duration: self.duration,
@@ -687,6 +690,7 @@ impl Animation {
     }
 
     #[inline]
+    #[cfg(any(feature = "serde", feature = "rkyv"))]
     fn t_previouses(&self) -> &[u16] {
         unsafe { slice::from_raw_parts(self.t_previouses, self.translations_count as usize) }
     }
@@ -697,6 +701,7 @@ impl Animation {
     }
 
     #[inline]
+    #[cfg(any(feature = "serde", feature = "rkyv"))]
     fn t_iframe_entries(&self) -> &[u8] {
         unsafe { slice::from_raw_parts(self.t_iframe_entries, self.t_iframe_entries_count as usize) }
     }
@@ -707,6 +712,7 @@ impl Animation {
     }
 
     #[inline]
+    #[cfg(any(feature = "serde", feature = "rkyv"))]
     fn t_iframe_desc(&self) -> &[u32] {
         unsafe { slice::from_raw_parts(self.t_iframe_desc, self.t_iframe_desc_count as usize) }
     }
@@ -738,6 +744,7 @@ impl Animation {
     }
 
     #[inline]
+    #[cfg(any(feature = "serde", feature = "rkyv"))]
     fn r_previouses(&self) -> &[u16] {
         unsafe { slice::from_raw_parts(self.r_previouses, self.rotations_count as usize) }
     }
@@ -748,6 +755,7 @@ impl Animation {
     }
 
     #[inline]
+    #[cfg(any(feature = "serde", feature = "rkyv"))]
     fn r_iframe_entries(&self) -> &[u8] {
         unsafe { slice::from_raw_parts(self.r_iframe_entries, self.r_iframe_entries_count as usize) }
     }
@@ -758,6 +766,7 @@ impl Animation {
     }
 
     #[inline]
+    #[cfg(any(feature = "serde", feature = "rkyv"))]
     fn r_iframe_desc(&self) -> &[u32] {
         unsafe { slice::from_raw_parts(self.r_iframe_desc, self.r_iframe_desc_count as usize) }
     }
@@ -789,6 +798,7 @@ impl Animation {
     }
 
     #[inline]
+    #[cfg(any(feature = "serde", feature = "rkyv"))]
     fn s_previouses(&self) -> &[u16] {
         unsafe { slice::from_raw_parts(self.s_previouses, self.scales_count as usize) }
     }
@@ -799,6 +809,7 @@ impl Animation {
     }
 
     #[inline]
+    #[cfg(any(feature = "serde", feature = "rkyv"))]
     fn s_iframe_entries(&self) -> &[u8] {
         unsafe { slice::from_raw_parts(self.s_iframe_entries, self.s_iframe_entries_count as usize) }
     }
@@ -809,6 +820,7 @@ impl Animation {
     }
 
     #[inline]
+    #[cfg(any(feature = "serde", feature = "rkyv"))]
     fn s_iframe_desc(&self) -> &[u32] {
         unsafe { slice::from_raw_parts(self.s_iframe_desc, self.s_iframe_desc_count as usize) }
     }
