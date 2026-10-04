@@ -5,6 +5,9 @@
 //! an open source C++ 3d skeletal animation library and toolset. Ozz-animation-rs only implement ozz-animation's
 //! runtime part. You should use this library with ozz-animation's toolset.
 //!
+//! STABLE FORK: feature `offline` adds ozz-animation's offline builders (`offline` module): raw skeleton and
+//! animation, their builders, the keyframe optimizer and an archive writer. Feature `gltf` adds glTF import.
+//!
 //! In order to introduce cross-platform deterministic, ozz-animation-rs does not simply wrap ozz-animation's
 //! runtime, but rewrite the full runtime library in rust. So it can be used in network game scenarios, such as
 //! lock-step networking synchronize.
@@ -61,6 +64,8 @@ pub mod ik_two_bone_job;
 pub mod local_to_model_job;
 pub mod math;
 pub mod motion_blending_job;
+#[cfg(feature = "offline")]
+pub mod offline;
 #[cfg(all(feature = "wasm", feature = "nodejs"))]
 pub mod nodejs;
 pub mod sampling_job;

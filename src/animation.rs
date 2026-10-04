@@ -18,7 +18,7 @@ use crate::math::{f16_to_f32, fx4, ix4, simd_f16_to_f32, SoaQuat, SoaVec3, ONE, 
 #[derive(Debug, Clone, Copy, PartialEq)]
 #[cfg_attr(feature = "rkyv", derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct Float3Key([u16; 3]);
+pub struct Float3Key(pub(crate) [u16; 3]);
 
 impl Float3Key {
     pub const fn new(value: [u16; 3]) -> Float3Key {
@@ -51,7 +51,7 @@ impl ArchiveRead<Float3Key> for Float3Key {
 #[derive(Debug, Clone, Copy, PartialEq)]
 #[cfg_attr(feature = "rkyv", derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize))]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-pub struct QuaternionKey([u16; 3]);
+pub struct QuaternionKey(pub(crate) [u16; 3]);
 
 impl QuaternionKey {
     pub const fn new(value: [u16; 3]) -> QuaternionKey {
@@ -265,7 +265,7 @@ pub struct AnimationMeta {
     pub s_iframe_desc_count: u32,
 }
 
-#[cfg(any(test, feature = "serde"))]
+#[cfg(any(test, feature = "serde", feature = "offline"))]
 #[derive(Debug, Default, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub(crate) struct AnimationRaw {
@@ -427,7 +427,7 @@ impl Animation {
         Animation::from_archive(&mut archive)
     }
 
-    #[cfg(any(test, feature = "serde"))]
+    #[cfg(any(test, feature = "serde", feature = "offline"))]
     pub(crate) fn from_raw(raw: &AnimationRaw) -> Animation {
         let meta = AnimationMeta {
             version: Animation::version(),

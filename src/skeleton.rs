@@ -60,7 +60,7 @@ pub struct SkeletonMeta {
     pub joint_parents: Vec<i16>,
 }
 
-#[cfg(any(test, feature = "serde"))]
+#[cfg(any(test, feature = "serde", feature = "offline"))]
 #[derive(Debug, Default, Clone)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub(crate) struct SkeletonRaw {
@@ -155,7 +155,7 @@ impl Skeleton {
         Skeleton::from_archive(&mut archive)
     }
 
-    #[cfg(any(test, feature = "serde"))]
+    #[cfg(any(test, feature = "serde", feature = "offline"))]
     pub(crate) fn from_raw(raw: &SkeletonRaw) -> Skeleton {
         let mut skeleton = Skeleton::new(SkeletonMeta {
             version: Self::version(),
